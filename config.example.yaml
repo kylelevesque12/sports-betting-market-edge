@@ -1,0 +1,20 @@
+# Example configuration — copy to config.yaml and adjust.
+# Never put API keys here; keys are read from environment variables.
+
+sport: nba
+market: moneyline
+
+data:
+  raw_dir: data/raw
+  interim_dir: data/interim
+  processed_dir: data/processed
+  external_dir: data/external
+
+# Name of the environment variable holding the odds API key (value comes
+# from the environment, e.g. via a local .env file that is never committed).
+api:
+  odds_api_key_env_var: ODDS_API_KEY
+
+backtesting:
+  staking: flat
+  unit_size: 1.0

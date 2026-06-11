@@ -1,0 +1,27 @@
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Secrets — never commit credentials
+.env
+.env.*
+
+# Data and generated figures (raw data is immutable and stays local)
+data/raw/*
+data/interim/*
+data/processed/*
+reports/figures/*
+
+# Preserve empty directories
+!data/raw/.gitkeep
+!data/interim/.gitkeep
+!data/processed/.gitkeep
+!reports/figures/.gitkeep

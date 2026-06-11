@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sports-betting-market-edge"
+version = "0.1.0"
+description = "Research pipeline for identifying historical expected-value opportunities in NBA moneyline markets. Educational/portfolio use only; not betting advice."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "Kyle Levesque" }]
+
+[tool.setuptools.packages.find]
+include = ["src*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
