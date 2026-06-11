@@ -48,6 +48,22 @@ Do not expand scope (other sports, markets, staking schemes) without explicit di
 ### Claims
 - Never make claims of guaranteed profitability — in code comments, docs, README, or output.
 
+## Technical Stack
+
+Full rationale lives in `docs/tech_stack.md`. Every new package must be justified there before being added to `requirements.txt`.
+
+- **Data pipeline:** prefer **Polars** for ingestion, cleaning, joins, feature engineering, and Parquet storage. Use `LazyFrame`/`scan_parquet` where useful. pandas only for scikit-learn/plotting compatibility or tiny examples.
+- **Storage:** Parquet for processed datasets. CSV only for tiny toy/sample data. Raw data saved before any transformation.
+- **Modeling:** scikit-learn for v1 (market baseline, logistic regression, regularized logistic regression, calibration, metrics).
+- **Experiment tracking:** MLflow planned, but not added until the first real model training script exists.
+- **Quality:** pytest, ruff, black. pre-commit considered once the core pipeline is stable.
+- **Delayed:** no XGBoost, LightGBM, Optuna, Airflow, Docker, or cloud tooling yet — future milestones after baseline model + backtest.
+
+Architecture rules:
+- Do not rewrite the tested betting math modules unless explicitly asked.
+- Do not refactor everything to Polars at once — new data modules prefer Polars; convert to pandas/numpy only at the scikit-learn boundary.
+- Keep toy sample data simple.
+
 ## Coding Style
 
 - Python 3.11+

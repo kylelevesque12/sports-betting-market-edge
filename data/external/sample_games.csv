@@ -1,0 +1,11 @@
+game_id,season,game_date,home_team,away_team,home_score,away_score,home_win
+G001,2025-26,2025-11-01,Anvils,Krakens,112,104,1
+G002,2025-26,2025-11-02,Lynx,Comets,98,101,0
+G003,2025-26,2025-11-04,Comets,Anvils,95,118,0
+G004,2025-26,2025-11-06,Krakens,Lynx,110,102,1
+G005,2025-26,2025-11-08,Anvils,Comets,121,99,1
+G006,2025-26,2025-11-09,Lynx,Krakens,105,108,0
+G007,2025-26,2025-11-11,Krakens,Anvils,99,103,0
+G008,2025-26,2025-11-13,Comets,Lynx,104,100,1
+G009,2025-26,2025-11-15,Anvils,Lynx,116,109,1
+G010,2025-26,2025-11-17,Comets,Krakens,90,107,0

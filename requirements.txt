@@ -1,7 +1,19 @@
+# Core data pipeline (see docs/tech_stack.md for justification)
+polars
 pandas
 numpy
+
+# Modeling
 scikit-learn
+
+# Plotting
 matplotlib
-pytest
+
+# Config & secrets
 pyyaml
 python-dotenv
+
+# Testing & code quality
+pytest
+ruff
+black
