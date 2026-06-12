@@ -59,31 +59,55 @@ MATCHED_DUPLICATE_KEY: tuple[str, ...] = (
 )
 
 
-def derive_event_date_from_odds(odds: pl.DataFrame) -> pl.DataFrame:
+def derive_event_date_from_odds(
+    odds: pl.DataFrame,
+    event_timezone: str = "America/New_York",
+) -> pl.DataFrame:
     """Return ``odds`` with a normalized ``event_date`` (Polars ``Date``).
 
     Sources, in priority order: an existing ``event_date`` column, the date
     part of ``commence_time``, or the date part of ``event_datetime``.
 
+    Timezone rule: providers commonly report event start times in UTC, but
+    NBA schedule dates follow the US convention — a late tip reported as
+    e.g. ``2025-11-03T00:30:00Z`` is an evening game on **Nov 2** in
+    ``America/New_York``. Timezone-aware datetimes are therefore converted
+    to ``event_timezone`` before the date is taken; timezone-naive
+    datetimes are treated as already being project-local time. The source
+    datetime column is preserved unchanged alongside the derived date.
+
     Args:
         odds: Normalized odds rows.
+        event_timezone: IANA timezone for the NBA schedule date convention.
+            Defaults to ``America/New_York``.
 
     Returns:
         ``odds`` with ``event_date`` parsed/derived as ``pl.Date``.
 
     Raises:
-        ValueError: If none of the event-date columns is present — the
-            snapshot ``timestamp`` alone cannot be used, because it records
-            when odds were captured, not when the game starts.
+        ValueError: If none of the event-date columns is present (the
+            snapshot ``timestamp`` records when odds were captured, not
+            when the game starts, and is never used), or if
+            ``event_timezone`` is not a valid timezone name.
     """
     if "event_date" in odds.columns:
         return parse_date_column(odds, "event_date")
     for source in ("commence_time", "event_datetime"):
         if source in odds.columns:
             parsed = parse_datetime_column(odds, source)
-            return parsed.with_columns(
-                pl.col(source).dt.date().alias("event_date")
-            )
+            source_dtype = parsed.schema[source]
+            try:
+                date_expr = pl.col(source)
+                if getattr(source_dtype, "time_zone", None) is not None:
+                    date_expr = date_expr.dt.convert_time_zone(event_timezone)
+                return parsed.with_columns(
+                    date_expr.dt.date().alias("event_date")
+                )
+            except pl.exceptions.PolarsError as exc:
+                raise ValueError(
+                    f"could not derive event_date from {source!r} with "
+                    f"timezone {event_timezone!r}: {exc}"
+                ) from exc
     raise ValueError(
         "odds has no event_date, commence_time, or event_datetime column. "
         "An event start date is required for matching; the snapshot "

@@ -31,15 +31,24 @@ joining, so source spelling differences ("Boston Celtics", "GS") cannot
 break matches. No fuzzy matching: near-misses are bugs to investigate, not
 distances to tolerate.
 
-## Event-date requirements
+## Event-date requirements and timezones
 
-Accepted source columns, in priority order: `event_date` (parsed as Date),
-`commence_time` (Datetime; date part used — The Odds API provides this), or
-`event_datetime` (same handling). Note for late-night games: commence times
-near midnight UTC can land on the next calendar day relative to US game
-dates. If the selected provider reports UTC commence times, timezone
-conversion to US/Eastern before date extraction belongs in the ingestion
-layer — verify against known games during real-data validation.
+Accepted source columns, in priority order: `event_date` (parsed as Date,
+takes precedence and is never re-derived), `commence_time` (Datetime — The
+Odds API provides this), or `event_datetime` (same handling).
+
+The snapshot `timestamp` is **capture time** (when the price was observed);
+`commence_time`/`event_datetime` are **event start time** (when the game
+tips). Only the latter can locate a game on the schedule.
+
+Timezone rule: providers report event starts in UTC, but NBA schedule dates
+follow the US convention. A 7:30pm ET tip on Nov 2 is `2025-11-03T00:30:00Z`
+in UTC — taking the UTC calendar date would assign the game to Nov 3 and the
+match would fail (loudly, but wrongly). `derive_event_date_from_odds`
+therefore converts timezone-aware datetimes to `America/New_York` (the
+`event_timezone` parameter) before extracting the date. Timezone-naive
+datetimes are treated as already project-local and used as-is. This rule
+exists specifically so late-night NBA games cannot match to the wrong date.
 
 ## Duplicate detection
 

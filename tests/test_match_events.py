@@ -79,6 +79,72 @@ class TestDeriveEventDate:
             derive_event_date_from_odds(odds)
 
 
+class TestTimezoneHandling:
+    def test_event_date_precedence_over_commence_time(self) -> None:
+        # Explicit event_date wins even when commence_time would disagree.
+        odds = odds_rows().with_columns(
+            pl.Series("event_date", ["2023-12-31", "2023-12-31"])
+        )
+        result = derive_event_date_from_odds(odds)
+        assert {str(d) for d in result.get_column("event_date").to_list()} == {
+            "2023-12-31"
+        }
+
+    def test_utc_late_night_rolls_back_to_us_date(self) -> None:
+        # 00:30 UTC on Nov 3 is 19:30 ET on Nov 2 (EST, post-DST-end).
+        odds = odds_rows(
+            commence_time=["2025-11-03T00:30:00Z", "2025-11-03T02:00:00Z"]
+        )
+        result = derive_event_date_from_odds(odds)
+        assert [str(d) for d in result.get_column("event_date").to_list()] == [
+            "2025-11-02",
+            "2025-11-02",
+        ]
+
+    def test_utc_midday_keeps_same_date(self) -> None:
+        # 18:00 UTC is early afternoon ET on the same calendar day.
+        odds = odds_rows(
+            commence_time=["2025-11-02T18:00:00Z", "2025-11-02T19:00:00Z"]
+        )
+        result = derive_event_date_from_odds(odds)
+        assert [str(d) for d in result.get_column("event_date").to_list()] == [
+            "2025-11-02",
+            "2025-11-02",
+        ]
+
+    def test_naive_commence_time_unchanged(self) -> None:
+        # Timezone-naive datetimes are already project-local: date as-is.
+        odds = odds_rows(
+            commence_time=["2023-10-24T23:10:00", "2023-10-25T02:10:00"]
+        )
+        result = derive_event_date_from_odds(odds)
+        assert [str(d) for d in result.get_column("event_date").to_list()] == [
+            "2023-10-24",
+            "2023-10-25",
+        ]
+
+    def test_event_datetime_same_timezone_behavior(self) -> None:
+        odds = odds_rows().drop("commence_time").with_columns(
+            pl.Series("event_datetime", ["2025-11-03T00:30:00Z", "2025-11-02T18:00:00Z"])
+        )
+        result = derive_event_date_from_odds(odds)
+        assert [str(d) for d in result.get_column("event_date").to_list()] == [
+            "2025-11-02",
+            "2025-11-02",
+        ]
+
+    def test_source_column_preserved(self) -> None:
+        odds = odds_rows(commence_time=["2025-11-03T00:30:00Z"] * 2)
+        result = derive_event_date_from_odds(odds)
+        assert "commence_time" in result.columns
+        assert isinstance(result.schema["commence_time"], pl.Datetime)
+
+    def test_invalid_timezone_raises(self) -> None:
+        odds = odds_rows(commence_time=["2025-11-03T00:30:00Z"] * 2)
+        with pytest.raises(ValueError, match="Not/AZone"):
+            derive_event_date_from_odds(odds, event_timezone="Not/AZone")
+
+
 class TestMatchOddsToGames:
     def test_populates_internal_game_id(self, games: pl.DataFrame) -> None:
         matched = match_odds_to_games(odds_rows(), games)
