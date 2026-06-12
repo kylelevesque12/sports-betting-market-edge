@@ -88,5 +88,16 @@ deliberately separate from strict event matching: `match_events.py` remains
 strict and unweakened, and every in-scope row must still match exactly one
 game or the run fails loudly.
 
+## First real baseline evaluation (sample)
+
+`scripts/evaluate_real_market_baseline_sample.py` runs the closing-line
+market baseline over the matched sample (15 games, 2 books). First-run
+metrics were *worse than a coin flip* (log loss ~0.71 vs ln 2 ≈ 0.693) —
+which is exactly what a 15-game sample can do, and a useful reminder of why
+the research plan forbids conclusions at this scale. The sample also lands
+on the season's final weekend (the busiest-date heuristic picks late-season
+days), where resting/tanking makes favorites unusually unreliable; the
+full-season pull will not share that bias. Pipeline validation only.
+
 Tests never call the live API — `tests/test_collect_nba_games.py` covers
 normalization and saving with mocked frames only.
