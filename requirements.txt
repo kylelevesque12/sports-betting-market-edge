@@ -2,6 +2,7 @@
 polars
 pandas
 numpy
+nba_api
 
 # Modeling
 scikit-learn

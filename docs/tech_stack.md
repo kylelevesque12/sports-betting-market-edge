@@ -55,6 +55,19 @@ v1 models, in order:
 Probability quality comes before ROI, so the calibration module matters more than
 model sophistication at this stage.
 
+## NBA Data — nba_api
+
+**Package:** `nba_api`
+
+Python client for the NBA.com stats endpoints; the games/results source named
+in docs/research_plan.md (Section 6). Used only inside collection functions
+(lazy import) so the rest of the pipeline has no hard dependency on it; unit
+tests never call the live API.
+
+**Justification:** free, complete historical schedule/results coverage, and
+the de facto standard client. Returns pandas at the boundary, converted to
+Polars immediately.
+
 ## Numerics & Plotting
 
 - **`numpy`** — array math underlying scikit-learn and metric computations.
