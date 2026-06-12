@@ -67,5 +67,26 @@ Run it manually from your terminal — never from tests:
     export THE_ODDS_API_KEY=...   # uncommitted; e.g. via .env
     python scripts/collect_real_odds_sample.py
 
+## Matching the odds sample (M9)
+
+`scripts/match_real_odds_sample.py` joins the odds sample to the games table
+via the strict M5 matcher. First real run finding: a historical snapshot
+contains **every upcoming event at capture time** — the 2024-04-12 sample
+included 17 events spanning Apr 12–17, and the two unmatched ones were the
+ATL/CHI **play-in tournament** games (Apr 16/17), which the regular-season
+games table excludes by definition. 15 of 17 events match; strict matching
+correctly refused the other two and the script's diagnostic table identified
+them precisely.
+
+Resolution (implemented): historical snapshots can include future events
+outside the currently collected games table, so the matching script performs
+an explicit **scope pre-filter** before strict matching — odds events whose
+(event_date, home_team, away_team) key does not exist in the games table are
+excluded, with the count, provider_event_ids, dates, and teams printed.
+Excluded events are reported, never silently dropped. This scope filter is
+deliberately separate from strict event matching: `match_events.py` remains
+strict and unweakened, and every in-scope row must still match exactly one
+game or the run fails loudly.
+
 Tests never call the live API — `tests/test_collect_nba_games.py` covers
 normalization and saving with mocked frames only.
