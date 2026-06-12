@@ -99,5 +99,31 @@ on the season's final weekend (the busiest-date heuristic picks late-season
 days), where resting/tanking makes favorites unusually unreliable; the
 full-season pull will not share that bias. Pipeline validation only.
 
+## One-month odds collection
+
+`scripts/collect_real_odds_month.py` scales the M8 pattern to one
+mid-season month (January 2024 — far from opening week, All-Star, and the
+play-in boundary), two snapshots per game date (18:00Z early, 23:30Z
+near-tip), two bookmakers. The default run is a **dry plan** that prints
+the date range, snapshot count, and estimated credit cost and exits with
+zero network calls; `--confirm` fetches only the snapshots whose raw JSON
+is not already saved (resume-safe — an interrupted run continues where it
+left off at no extra cost); `--confirm --overwrite` refetches everything.
+Credits remaining are printed after each live call. Output:
+`data/processed/odds_month_sample.parquet`.
+
+## Matching the one-month sample
+
+`scripts/match_real_odds_month.py` applies the scope-filter + strict-match
+pattern at month scale. January 2024 result: **1,201 of 1,203 odds rows
+matched (234 games)**, zero duplicates, zero unmatched in-scope events. The
+single scope-excluded event (UTA vs GSW, 2024-01-17) is the Warriors-Jazz
+game **postponed** after the death of Warriors assistant coach Dejan
+Milojević — the odds existed pre-game, but no game occurred on that date,
+so the exclusion is correct behavior, not data loss. Postponements are
+therefore a real category the scope filter handles naturally: the
+rescheduled game appears in the games table on its actual date and matches
+the odds captured for that later date.
+
 Tests never call the live API — `tests/test_collect_nba_games.py` covers
 normalization and saving with mocked frames only.
