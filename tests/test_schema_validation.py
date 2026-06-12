@@ -80,6 +80,14 @@ class TestParseDatetimeColumn:
         result = parse_datetime_column(df, "timestamp")
         assert result.equals(df)
 
+    def test_utc_z_suffix_parses_as_utc_aware(self) -> None:
+        # Real providers (The Odds API) report UTC times with a Z suffix.
+        df = pl.DataFrame({"timestamp": ["2023-10-25T00:10:00Z"]})
+        result = parse_datetime_column(df, "timestamp")
+        dtype = result.schema["timestamp"]
+        assert isinstance(dtype, pl.Datetime)
+        assert dtype.time_zone == "UTC"
+
     def test_null_timestamps_raise(self) -> None:
         df = pl.DataFrame({"timestamp": ["2025-11-01T18:30:00", None]})
         with pytest.raises(ValueError, match="null value"):

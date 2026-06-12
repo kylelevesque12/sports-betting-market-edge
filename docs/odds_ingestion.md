@@ -10,6 +10,17 @@ each with `home_team`, `away_team`, and per-bookmaker `markets` containing
 `oddsFormat=american`; the normalizer rejects non-whole-number prices, which
 catches accidentally-decimal snapshots immediately.
 
+## commence_time is preserved
+
+The clean schema carries the provider's `commence_time` (parsed as a true
+Datetime), because M5 event matching requires the **event start time** — the
+snapshot `timestamp` only records when odds were captured and cannot locate
+the game on a calendar (see docs/event_matching.md). Events missing
+`commence_time` are rejected at normalization rather than failing later at
+matching. Note: The Odds API reports commence times in UTC; the timezone
+handling caveat in docs/event_matching.md applies before date-based
+matching against US game dates.
+
 ## provider_event_id vs. game_id
 
 Provider event IDs do **not** match internal NBA game IDs. The clean odds

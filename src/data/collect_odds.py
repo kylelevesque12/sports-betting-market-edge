@@ -30,6 +30,7 @@ CLEAN_ODDS_COLUMNS: tuple[str, ...] = (
     "sportsbook",
     "market",
     "timestamp",
+    "commence_time",
     "home_team",
     "away_team",
     "home_american_odds",
@@ -102,6 +103,13 @@ def normalize_the_odds_api_h2h_snapshot(
         raw_away = event.get("away_team")
         if not raw_home or not raw_away:
             raise ValueError(f"event {event_id!r} is missing home/away teams.")
+
+        commence_time = event.get("commence_time")
+        if not commence_time:
+            raise ValueError(
+                f"event {event_id!r} is missing commence_time; the event "
+                f"start time is required for M5 game matching."
+            )
         home = canonicalize_team_name(raw_home)
         away = canonicalize_team_name(raw_away)
 
@@ -150,6 +158,7 @@ def normalize_the_odds_api_h2h_snapshot(
                     "sportsbook": book,
                     "market": market,
                     "timestamp": snapshot_timestamp,
+                    "commence_time": commence_time,
                     "home_team": home,
                     "away_team": away,
                     "home_american_odds": _american_int(prices[home], event_id, "home"),
@@ -167,6 +176,7 @@ def normalize_the_odds_api_h2h_snapshot(
             "sportsbook": pl.String,
             "market": pl.String,
             "timestamp": pl.String,
+            "commence_time": pl.String,
             "home_team": pl.String,
             "away_team": pl.String,
             "home_american_odds": pl.Int64,
@@ -176,6 +186,7 @@ def normalize_the_odds_api_h2h_snapshot(
         },
     )
     odds = parse_datetime_column(odds, "timestamp")
+    odds = parse_datetime_column(odds, "commence_time")
     if odds.height > 0:
         validate_american_odds_column(odds, "home_american_odds")
         validate_american_odds_column(odds, "away_american_odds")

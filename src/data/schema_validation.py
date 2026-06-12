@@ -96,6 +96,18 @@ def parse_datetime_column(df: pl.DataFrame, column: str) -> pl.DataFrame:
         try:
             return df.with_columns(pl.col(column).str.to_datetime(strict=True))
         except pl.exceptions.PolarsError as exc:
+            # Timezone-suffixed ISO strings (e.g. The Odds API's UTC "Z"
+            # timestamps) need an explicit zone; parse them as UTC-aware.
+            if "time zone" in str(exc):
+                try:
+                    return df.with_columns(
+                        pl.col(column).str.to_datetime(strict=True, time_zone="UTC")
+                    )
+                except pl.exceptions.PolarsError as utc_exc:
+                    raise ValueError(
+                        f"column {column!r} contains non-parseable datetime "
+                        f"strings: {utc_exc}"
+                    ) from utc_exc
             raise ValueError(
                 f"column {column!r} contains non-parseable datetime strings: {exc}"
             ) from exc

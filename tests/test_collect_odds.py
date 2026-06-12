@@ -80,6 +80,18 @@ class TestNormalizeSnapshot:
         odds = normalize_the_odds_api_h2h_snapshot(snapshot([make_event()]), SNAPSHOT_TS)
         assert isinstance(odds.schema["timestamp"], pl.Datetime)
 
+    def test_commence_time_preserved_as_datetime(self) -> None:
+        # M5 matching requires the event start time in the clean schema.
+        odds = normalize_the_odds_api_h2h_snapshot(snapshot([make_event()]), SNAPSHOT_TS)
+        assert "commence_time" in odds.columns
+        assert isinstance(odds.schema["commence_time"], pl.Datetime)
+
+    def test_missing_commence_time_raises(self) -> None:
+        event = make_event()
+        del event["commence_time"]
+        with pytest.raises(ValueError, match="missing commence_time"):
+            normalize_the_odds_api_h2h_snapshot(snapshot([event]), SNAPSHOT_TS)
+
     def test_home_away_odds_mapped_correctly(self) -> None:
         # Outcomes listed away-first to prove mapping is by name, not order.
         book = {

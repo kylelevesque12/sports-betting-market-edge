@@ -1,0 +1,147 @@
+{
+  "timestamp": "2023-10-23T15:00:00",
+  "previous_timestamp": null,
+  "next_timestamp": "2023-10-24T16:30:00",
+  "data": [
+    {
+      "id": "evt-bos-nyk-1024",
+      "sport_key": "basketball_nba",
+      "commence_time": "2023-10-24T19:10:00",
+      "home_team": "Boston Celtics",
+      "away_team": "New York Knicks",
+      "bookmakers": [
+        {
+          "key": "draftkings",
+          "title": "DraftKings",
+          "markets": [
+            {
+              "key": "h2h",
+              "outcomes": [
+                { "name": "Boston Celtics", "price": -150 },
+                { "name": "New York Knicks", "price": 130 }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "fanduel",
+          "title": "FanDuel",
+          "markets": [
+            {
+              "key": "h2h",
+              "outcomes": [
+                { "name": "Boston Celtics", "price": -148 },
+                { "name": "New York Knicks", "price": 126 }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "evt-den-lal-1024",
+      "sport_key": "basketball_nba",
+      "commence_time": "2023-10-24T22:00:00",
+      "home_team": "Denver Nuggets",
+      "away_team": "Los Angeles Lakers",
+      "bookmakers": [
+        {
+          "key": "draftkings",
+          "title": "DraftKings",
+          "markets": [
+            {
+              "key": "h2h",
+              "outcomes": [
+                { "name": "Denver Nuggets", "price": -210 },
+                { "name": "Los Angeles Lakers", "price": 175 }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "fanduel",
+          "title": "FanDuel",
+          "markets": [
+            {
+              "key": "h2h",
+              "outcomes": [
+                { "name": "Denver Nuggets", "price": -205 },
+                { "name": "Los Angeles Lakers", "price": 172 }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "evt-gsw-phx-1025",
+      "sport_key": "basketball_nba",
+      "commence_time": "2023-10-25T19:00:00",
+      "home_team": "Golden State Warriors",
+      "away_team": "Phoenix Suns",
+      "bookmakers": [
+        {
+          "key": "draftkings",
+          "title": "DraftKings",
+          "markets": [
+            {
+              "key": "h2h",
+              "outcomes": [
+                { "name": "Golden State Warriors", "price": -135 },
+                { "name": "Phoenix Suns", "price": 114 }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "fanduel",
+          "title": "FanDuel",
+          "markets": [
+            {
+              "key": "h2h",
+              "outcomes": [
+                { "name": "Golden State Warriors", "price": -132 },
+                { "name": "Phoenix Suns", "price": 112 }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "evt-mia-det-1025",
+      "sport_key": "basketball_nba",
+      "commence_time": "2023-10-25T16:40:00",
+      "home_team": "Miami Heat",
+      "away_team": "Detroit Pistons",
+      "bookmakers": [
+        {
+          "key": "draftkings",
+          "title": "DraftKings",
+          "markets": [
+            {
+              "key": "h2h",
+              "outcomes": [
+                { "name": "Miami Heat", "price": -320 },
+                { "name": "Detroit Pistons", "price": 260 }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "fanduel",
+          "title": "FanDuel",
+          "markets": [
+            {
+              "key": "h2h",
+              "outcomes": [
+                { "name": "Miami Heat", "price": -315 },
+                { "name": "Detroit Pistons", "price": 255 }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
