@@ -48,6 +48,14 @@ Do not expand scope (other sports, markets, staking schemes) without explicit di
 ### Claims
 - Never make claims of guaranteed profitability — in code comments, docs, README, or output.
 
+## Research Design
+
+The real-data research phase follows the pre-registered design in
+`docs/research_plan.md`. Read it before any research-phase task. Key binding
+rules: closing line is the benchmark, opening/snapshot lines are the bet
+price, never blur the two; no feature may use odds captured after the
+simulated bet time; bet-filter thresholds are fixed before test evaluation.
+
 ## Technical Stack
 
 Full rationale lives in `docs/tech_stack.md`. Every new package must be justified there before being added to `requirements.txt`.
