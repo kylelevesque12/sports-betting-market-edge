@@ -3,6 +3,7 @@ polars
 pandas
 numpy
 nba_api
+requests
 
 # Modeling
 scikit-learn

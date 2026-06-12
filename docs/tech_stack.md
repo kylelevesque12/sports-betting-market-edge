@@ -68,6 +68,16 @@ tests never call the live API.
 the de facto standard client. Returns pandas at the boundary, converted to
 Polars immediately.
 
+## Odds Fetching — requests
+
+**Package:** `requests`
+
+Used only inside ``fetch_the_odds_api_historical_snapshot`` (lazy import) to
+call The Odds API historical endpoint. Never used in tests; normalization is
+fully decoupled from fetching, so the pipeline runs on saved JSON without it.
+
+**Justification:** the standard, minimal HTTP client; one call site.
+
 ## Numerics & Plotting
 
 - **`numpy`** — array math underlying scikit-learn and metric computations.
